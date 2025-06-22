@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { 
@@ -19,7 +19,18 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const ServicesPage = () => {
+// Loading component
+const ServicesLoading = () => (
+  <div className="min-h-screen bg-gray-50 pt-24 flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading services...</p>
+    </div>
+  </div>
+);
+
+// Main services component that uses useSearchParams
+const ServicesContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeService, setActiveService] = useState<string | null>(null);
@@ -388,6 +399,15 @@ const ServicesPage = () => {
         </AnimatePresence>
       </div>
     </div>
+  );
+};
+
+// Main page component with Suspense wrapper
+const ServicesPage = () => {
+  return (
+    <Suspense fallback={<ServicesLoading />}>
+      <ServicesContent />
+    </Suspense>
   );
 };
 
